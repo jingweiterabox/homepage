@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Salesforce案件経験｜RFP提案用</title>
+<style>
+:root{
+  --lime:#add735;
+  --lime-soft:#eaf4c8;
+  --ink:#2f3639;
+  --muted:#70787b;
+  --line:#dfe4e5;
+  --white:#fff;
+}
+*{box-sizing:border-box}
+html,body{
+  margin:0;width:100%;height:100%;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",
+  "Hiragino Kaku Gothic ProN",Meiryo,sans-serif;
+  background:#e7eaea;
+  overflow:hidden;
+}
+.viewport{
+  position:relative;
+  width:min(100vw,177.7777778vh);
+  height:min(56.25vw,100vh);
+  margin:auto;
+  top:50%;
+  transform:translateY(-50%);
+  aspect-ratio:16/9;
+  overflow:hidden;
+}
+.stage{
+  position:absolute;
+  left:0;top:0;
+  width:1600px;height:900px;
+  transform-origin:top left;
+}
+.slide{
+  width:1600px;height:900px;
+  position:absolute;left:0;top:0;
+  display:none;
+  overflow:hidden;
+  background:var(--white);
+}
+.slide.active{display:block}
+
+/* 固定キャンバスなので、背景は文字領域から完全に分離 */
+.topbar{position:absolute;left:0;top:0;width:1600px;height:10px;background:var(--lime);z-index:5}
+.band{position:absolute;right:0;top:0;width:365px;height:900px;background:var(--ink);z-index:1}
+.band::after{
+  content:"";position:absolute;left:-120px;top:0;width:190px;height:900px;
+  background:var(--lime);
+  clip-path:polygon(72% 0,100% 0,28% 100%,0 100%);
+}
+.content{
+  position:absolute;left:125px;right:455px;top:72px;bottom:72px;z-index:3;
+}
+.kicker{
+  font-size:15px;letter-spacing:.18em;font-weight:800;color:var(--muted);
+  text-transform:uppercase;margin-bottom:18px
+}
+.marker{width:62px;height:7px;background:var(--lime);margin-bottom:22px}
+h1{
+  margin:0;font-size:61px;line-height:1.08;letter-spacing:-.045em;font-weight:850
+}
+.lead{
+  margin:24px 0 0;max-width:1020px;font-size:21px;line-height:1.72;color:#555e61
+}
+.tag{
+  display:inline-block;margin-top:24px;padding:8px 16px;
+  border:1px solid #ccd4d5;background:#fbfcfc;font-size:14px;font-weight:750
+}
+.section-title{
+  display:flex;align-items:center;gap:10px;margin-top:30px;margin-bottom:16px;
+  font-weight:850;font-size:18px
+}
+.section-title::before{content:"";width:10px;height:10px;background:var(--lime);display:inline-block}
+.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+.card{border:1px solid var(--line);padding:20px 20px;background:#fbfcfc}
+.card .label{font-size:13px;color:var(--muted);font-weight:750;margin-bottom:8px}
+.card .value{font-size:38px;font-weight:850;line-height:1.08}
+.card .value em{font-style:normal;color:var(--lime)}
+.card p{font-size:14px;line-height:1.5;color:#616a6c;margin:9px 0 0}
+.rows{border-top:1px solid var(--line);margin-top:22px}
+.row{
+  display:grid;grid-template-columns:280px 1fr;padding:15px 0;
+  border-bottom:1px solid #edf0f0;font-size:16px;line-height:1.5
+}
+.row .rlabel{font-weight:800}.row .rtext{color:#5d6668}
+.callout{
+  margin-top:22px;padding:14px 18px;border-left:5px solid var(--lime);
+  background:var(--lime-soft);font-size:15px;line-height:1.6
+}
+.timeline{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:22px}
+.t{border:1px solid var(--line);padding:19px 18px;background:#fff;min-height:150px}
+.t .period{font-size:13px;color:var(--muted);font-weight:750}
+.t h3{font-size:19px;margin:9px 0 7px;line-height:1.35}
+.t p{font-size:14px;color:#616a6c;line-height:1.55;margin:0}
+.t .accent{display:inline-block;margin-top:10px;font-size:12px;font-weight:800;padding:5px 9px;background:#f0f3f3}
+.fit-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px}
+.fit{
+  border:1px solid var(--line);background:#fbfcfc;padding:18px 18px;min-height:145px
+}
+.fit .num{
+  width:30px;height:30px;border:2px solid var(--lime);display:flex;align-items:center;
+  justify-content:center;font-weight:900;margin-bottom:10px
+}
+.fit h3{font-size:17px;margin:0 0 7px;line-height:1.35}
+.fit p{font-size:14px;color:#687173;line-height:1.5;margin:0}
+.rbox{margin-top:22px;background:var(--ink);color:#fff;padding:18px 20px}
+.rbox .small{font-size:11px;letter-spacing:.1em;opacity:.7}
+.rbox .big{font-size:20px;font-weight:800;line-height:1.45;margin-top:6px}
+.rbox .big strong{color:var(--lime)}
+.side-title{position:absolute;z-index:4;right:38px;top:80px;color:#fff;width:245px}
+.side-title .num{font-size:58px;font-weight:900;line-height:1}
+.side-title .en{font-size:11px;letter-spacing:.15em;opacity:.72;margin-top:13px}
+.side-title .jp{font-size:21px;font-weight:800;line-height:1.5;margin-top:22px}
+.footer{
+  position:absolute;left:125px;right:40px;bottom:25px;z-index:6;
+  display:flex;justify-content:space-between;color:#899193;font-size:12px;letter-spacing:.1em
+}
+.footer .page{font-weight:850;color:var(--ink)}
+.nav{
+  position:absolute;left:50%;bottom:9px;transform:translateX(-50%);z-index:20;
+  display:flex;gap:6px;padding:6px 9px;background:rgba(255,255,255,.94);
+  border:1px solid #d8dddd;border-radius:99px;box-shadow:0 5px 20px rgba(0,0,0,.08)
+}
+.nav button{
+  width:28px;height:28px;border:0;border-radius:50%;background:#e7ebeb;
+  font-size:12px;font-weight:800;color:#4b5456;cursor:pointer
+}
+.nav button.active{background:var(--lime);color:#26302f}
+@media print{
+  @page{size:1600px 900px;margin:0}
+  .viewport{width:1600px;height:900px;top:0;transform:none}
+  .stage{transform:none!important}
+  .nav{display:none}
+  .slide{display:block!important;position:relative!important;page-break-after:always}
+}
+</style>
+</head>
+<body>
+<div class="viewport">
+  <div class="stage" id="stage">
+
+    <!-- 01 -->
+    <section class="slide active" id="slide-1">
+      <div class="topbar"></div><div class="band"></div>
+      <div class="side-title">
+        <div class="num">01</div><div class="en">PROJECT EXPERIENCE</div>
+        <div class="jp">Salesforce<br>案件経験</div>
+      </div>
+      <main class="content">
+        <div class="kicker">SALESFORCE / PROJECT EXPERIENCE</div>
+        <div class="marker"></div>
+        <h1>Salesforceを軸とした<br>業務システム開発経験</h1>
+        <p class="lead">
+          2019年12月から現在まで、Salesforceを活用した案件管理システムに携わり、
+          提案計画・アプリケーション設計・導入支援まで幅広く担当。
+          既存システムを前提とした機能追加・外部連携にも対応してきました。
+        </p>
+        <div class="tag">2019/12〜現在 ｜ SE ｜ Salesforce案件</div>
+        <div class="section-title">主要な対応実績</div>
+        <div class="cards">
+          <div class="card">
+            <div class="label">外部システムとの接続</div>
+            <div class="value">16<em>+</em></div>
+            <p>インターフェースの設計・対応経験</p>
+          </div>
+          <div class="card">
+            <div class="label">業務処理の自動化</div>
+            <div class="value">32<em>+</em></div>
+            <p>バッチの設計・対応経験</p>
+          </div>
+        </div>
+        <div class="callout">
+          <strong>今回RFPとの接点：</strong>
+          導入済みSalesforceへの追加開発、外部アプリケーション連携、既存業務を理解した上での改修に対応できる経験があります。
+        </div>
+      </main>
+      <div class="footer"><span>Salesforce業務システム改修｜実績紹介</span><span class="page">01 / 04</span></div>
+    </section>
+
+    <!-- 02 -->
+    <section class="slide" id="slide-2">
+      <div class="topbar"></div><div class="band"></div>
+      <div class="side-title">
+        <div class="num">02</div><div class="en">INTEGRATION</div>
+        <div class="jp">追加開発・<br>システム連携</div>
+      </div>
+      <main class="content">
+        <div class="kicker">SALESFORCE / INTEGRATION & DEVELOPMENT</div>
+        <div class="marker"></div>
+        <h1>外部システムとつなぐ<br>追加開発の経験</h1>
+        <p class="lead">
+          Salesforce単体の利用だけでなく、周辺システムとの接続や定型処理の自動化まで含めて対応。
+          システム間のデータ連携を前提に、既存業務への影響を考慮した設計・改修を行ってきました。
+        </p>
+        <div class="section-title">Salesforce案件での具体的な経験</div>
+        <div class="rows">
+          <div class="row"><div class="rlabel">16種類のインターフェース</div><div class="rtext">Salesforceと外部システム間のデータ連携を担当。業務フローを踏まえた連携仕様の整理・対応。</div></div>
+          <div class="row"><div class="rlabel">32個のバッチ</div><div class="rtext">定期処理・データ更新など、日常運用を支えるバックエンド処理を担当。</div></div>
+          <div class="row"><div class="rlabel">既存システムの追加・改修</div><div class="rtext">既存機能・運用を確認しながら、業務に必要な機能を追加・変更。</div></div>
+          <div class="row"><div class="rlabel">導入支援</div><div class="rtext">開発だけで終わらず、導入時の確認・利用側への支援まで対応。</div></div>
+        </div>
+        <div class="callout">
+          <strong>今回RFPへの接点：</strong>
+          電子サイン、Google、LINEなどの外部連携を「Salesforce側だけ」ではなく、連携先を含めた業務フローとして捉えられます。
+        </div>
+      </main>
+      <div class="footer"><span>Salesforce業務システム改修｜実績紹介</span><span class="page">02 / 04</span></div>
+    </section>
+
+    <!-- 03 -->
+    <section class="slide" id="slide-3">
+      <div class="topbar"></div><div class="band"></div>
+      <div class="side-title">
+        <div class="num">03</div><div class="en">UPSTREAM / SUPPORT</div>
+        <div class="jp">設計・提案・<br>導入支援</div>
+      </div>
+      <main class="content">
+        <div class="kicker">SALESFORCE / UPSTREAM & SUPPORT</div>
+        <div class="marker"></div>
+        <h1>「作る」だけでなく<br>上流から導入まで</h1>
+        <p class="lead">
+          今回のRFPで重視されている「要望を正確に汲み取る」「積極的に改善提案する」に対して、
+          Salesforce案件での上流経験と、他案件での顧客向け支援経験を組み合わせて対応できます。
+        </p>
+        <div class="section-title">これまでの経験</div>
+        <div class="timeline">
+          <div class="t"><div class="period">2019/12〜現在 ｜ SE</div><h3>Salesforce｜案件管理システム</h3><p>提案計画、アプリケーション設計、導入支援、16種類のインターフェース、32個のバッチ。</p><span class="accent">今回案件に最も近い経験</span></div>
+          <div class="t"><div class="period">2019/05〜2019/11 ｜ SE</div><h3>人材紹介システム</h3><p>リード・取引先業務システムの製品導入支援、資料作成、提案プレゼン。</p><span class="accent">顧客説明・提案経験</span></div>
+          <div class="t"><div class="period">2018/09〜2019/05 ｜ SE</div><h3>電力システム</h3><p>代理店管理システムの画面設計、画面製造、BUG調査、単体テスト。</p><span class="accent">設計〜テスト経験</span></div>
+          <div class="t"><div class="period">2018/05〜2018/09 ｜ PG</div><h3>通信システム</h3><p>レポート環境構築、数値指標・データ提供、プレゼン、翻訳、リリース管理。</p><span class="accent">運用・リリース経験</span></div>
+        </div>
+      </main>
+      <div class="footer"><span>Salesforce業務システム改修｜実績紹介</span><span class="page">03 / 04</span></div>
+    </section>
+
+    <!-- 04 -->
+    <section class="slide" id="slide-4">
+      <div class="topbar"></div><div class="band"></div>
+      <div class="side-title">
+        <div class="num">04</div><div class="en">FIT FOR RFP</div>
+        <div class="jp">今回案件での<br>活かし方</div>
+      </div>
+      <main class="content">
+        <div class="kicker">SALESFORCE / FIT FOR RFP</div>
+        <div class="marker"></div>
+        <h1>今回RFPで活かせる<br>4つのポイント</h1>
+        <p class="lead">
+          Salesforceの開発経験だけでなく、業務整理・提案・導入支援までを一つの流れで考え、
+          「必要な開発」と「運用で解決できること」を切り分けながら進めます。
+        </p>
+        <div class="fit-grid">
+          <div class="fit"><div class="num">01</div><h3>要望を業務要件へ整理</h3><p>現場の要望をそのまま開発項目にせず、現行業務・課題・優先度を整理して仕様化。</p></div>
+          <div class="fit"><div class="num">02</div><h3>自社対応／開発範囲を切り分け</h3><p>Salesforce標準機能・運用で対応できる範囲と、追加開発が必要な範囲を整理。</p></div>
+          <div class="fit"><div class="num">03</div><h3>外部連携を含めて設計</h3><p>電子サイン・Google・LINEなど、Salesforceと周辺システムを含めた構成で検討。</p></div>
+          <div class="fit"><div class="num">04</div><h3>導入後まで見据えて支援</h3><p>導入支援・資料作成・プレゼン経験を活かし、運用マニュアルや利用者向け整理まで意識。</p></div>
+        </div>
+        <div class="rbox">
+          <div class="small">PROPOSAL MESSAGE</div>
+          <div class="big">既存Salesforceの理解を起点に、<strong>追加開発だけでなく「業務改善として成立する形」</strong>まで伴走します。</div>
+        </div>
+      </main>
+      <div class="footer"><span>Salesforce業務システム改修｜実績紹介</span><span class="page">04 / 04</span></div>
+    </section>
+
+    <div class="nav" id="nav">
+      <button onclick="go(0)" class="active">1</button>
+      <button onclick="go(1)">2</button>
+      <button onclick="go(2)">3</button>
+      <button onclick="go(3)">4</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const slides=[...document.querySelectorAll('.slide')];
+const buttons=[...document.querySelectorAll('.nav button')];
+let current=0;
+
+function fitStage(){
+  const viewport=document.querySelector('.viewport');
+  const stage=document.getElementById('stage');
+  const scale=Math.min(viewport.clientWidth/1600, viewport.clientHeight/900);
+  stage.style.transform=`scale(${scale})`;
+}
+function go(i){
+  current=(i+slides.length)%slides.length;
+  slides.forEach((s,n)=>s.classList.toggle('active',n===current));
+  buttons.forEach((b,n)=>b.classList.toggle('active',n===current));
+  history.replaceState(null,'','#slide-'+(current+1));
+}
+function fromHash(){
+  const m=location.hash.match(/slide-(\d+)/);
+  const n=m?parseInt(m[1],10)-1:0;
+  go(Number.isFinite(n)&&n>=0&&n<slides.length?n:0);
+}
+window.addEventListener('resize',fitStage);
+window.addEventListener('hashchange',fromHash);
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key==='PageDown') go(current+1);
+  if(e.key==='ArrowLeft'||e.key==='PageUp') go(current-1);
+});
+fitStage();
+fromHash();
+</script>
+</body>
+</html>
