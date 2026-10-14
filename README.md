@@ -25,10 +25,14 @@ python -m http.server 4173
 - `←` / `PageUp`: 前のページ
 - `→` / `PageDown` / `Space`: 次のページ
 - `Home`: 1ページ目
-- `End`: 43ページ目
+- `End`: 最終ページ(54ページ目)
 - 左側の章ナビゲーション: 各章の先頭へ移動
 - 左側ナビゲーションの章名は目次と同一の日本語表記
-- URL Hash: `#slide-1` 〜 `#slide-43`
+- URL Hash: `#slide-1` 〜 `#slide-54`
+
+## Chapters
+
+第01〜07章(1〜43ページ)は基準画像＋HTMLレイヤー、第08章(44〜54ページ)はHTML/CSSのみで構成しています。顧客名は匿名(業種のみ記載)です。
 
 ## Files
 
@@ -40,5 +44,6 @@ python -m http.server 4173
 - `assets/reference/`: 承認済みページから分離した写真・建築背景などの非テキスト領域
 - `assets/reference/slides/`: `src` と1対1で対応する43ページの基準画像
 - `sync_reference_slides.ps1`: `src` から43ページの基準画像を再同期
+- `chapter8.js` / `chapter8.css`: 第08章「事例｜AI導入実績」(44〜54ページ)。基準画像を持たず、HTML/CSSのみで構成。`app.js` が起動時に読み込み、総ページ数を54に更新
 
 Viewerのコンテンツ領域は上下左右 `0px` で、内部の1600 × 900ステージを常に16:9のまま最大表示します。

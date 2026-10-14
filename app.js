@@ -1,6 +1,7 @@
 const ASSET = "./assets/images/";
 const REFERENCE_SLIDE_ASSET = "./assets/reference/slides/";
-const TOTAL = 43;
+const REFERENCE_SLIDE_COUNT = 43;
+let TOTAL = 43; // buildChapter8 の追加後に slides.length で更新
 const SLIDE_LAYER_MODES = new Set(["reference", "compare", "dom"]);
 
 const requestedLayerMode = new URLSearchParams(window.location.search).get("layer");
@@ -18,6 +19,7 @@ const sections = [
   { no: "05", label: "ソリューション事業部", start: 10, end: 38 },
   { no: "06", label: "IT人材サービス事業部", start: 39, end: 42 },
   { no: "07", label: "主要取引先", start: 43, end: 43 },
+  { no: "08", label: "事例｜AI導入実績", start: 44, end: 54 },
 ];
 
 const footer = (n) => `
@@ -127,6 +129,7 @@ const slides = [
         "ソリューション事業部",
         "IT人材サービス事業部",
         "主要取引先",
+        "事例｜AI導入実績",
       ]
         .map(
           (label, i) => `<div class="agenda__item"><b>${String(i + 1).padStart(2, "0")}</b><span>${label}</span></div>`,
@@ -852,11 +855,19 @@ function cycleSlideLayerMode() {
   setSlideLayerMode(layerModes[(currentIndex + 1) % layerModes.length]);
 }
 
+// 第08章(chapter8.js)のページを追加し、総ページ数を確定する
+if (typeof buildChapter8 === "function") {
+  slides.push(...buildChapter8({ frame, sectionSlide }));
+}
+TOTAL = slides.length;
+
 function currentSection(page) {
   return sections.find((section) => page >= section.start && page <= section.end);
 }
 
 function buildNavigation() {
+  const railCount = document.getElementById("railCount");
+  if (railCount) railCount.textContent = `${TOTAL} PAGES`;
   sectionNav.innerHTML = sections
     .map(
       (section) => `
@@ -892,21 +903,26 @@ function renderSlide(animate = true) {
     slide.setAttribute("aria-label", `スライド ${currentSlide} / ${TOTAL}`);
     slide.classList.add("slide--reference-backed");
 
-    const referenceImage = document.createElement("img");
-    referenceImage.className = "slide__reference-bg";
-    referenceImage.src = `${REFERENCE_SLIDE_ASSET}slide-${String(currentSlide).padStart(2, "0")}.png`;
-    referenceImage.alt = "";
-    referenceImage.setAttribute("aria-hidden", "true");
-    referenceImage.draggable = false;
-    referenceImage.addEventListener(
-      "error",
-      () => {
-        slide.classList.remove("slide--reference-backed");
-        referenceImage.remove();
-      },
-      { once: true },
-    );
-    slide.append(referenceImage);
+    // 基準画像があるのは 1〜43 ページのみ(第08章以降は DOM のみで描画)
+    if (currentSlide <= REFERENCE_SLIDE_COUNT) {
+      const referenceImage = document.createElement("img");
+      referenceImage.className = "slide__reference-bg";
+      referenceImage.src = `${REFERENCE_SLIDE_ASSET}slide-${String(currentSlide).padStart(2, "0")}.png`;
+      referenceImage.alt = "";
+      referenceImage.setAttribute("aria-hidden", "true");
+      referenceImage.draggable = false;
+      referenceImage.addEventListener(
+        "error",
+        () => {
+          slide.classList.remove("slide--reference-backed");
+          referenceImage.remove();
+        },
+        { once: true },
+      );
+      slide.append(referenceImage);
+    } else {
+      slide.classList.remove("slide--reference-backed");
+    }
   }
   if (animate && slide) {
     slide.classList.add("is-entering");
