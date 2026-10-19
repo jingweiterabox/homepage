@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <title>臨床AI｜循証ライブデモ</title>
+  <style>
+    :root{--bg:#eef1f4;--card:#fff;--ink:#1f2a30;--muted:#6b757a;--line:#d8dee2;--blue:#2f7cf6;--green:#1f9d6a;--lime:#add735;--amber:#c9891a}
+    *{box-sizing:border-box}
+    body{margin:0;width:1440px;height:900px;overflow:hidden;background:var(--bg);color:var(--ink);font-family:"Hiragino Sans","Noto Sans JP",sans-serif}
+    .app{display:grid;grid-template-rows:56px 1fr 64px;height:100%}
+    .top{display:flex;align-items:center;gap:14px;padding:0 22px;background:#fff;border-bottom:1px solid var(--line)}
+    .brand{font-weight:800;display:flex;align-items:center;gap:8px}
+    .brand i{width:10px;height:10px;background:var(--lime);display:inline-block}
+    .pid{color:var(--green);font-weight:700}
+    .pill{padding:4px 12px;border-radius:999px;background:#e7f7ef;color:var(--green);font-size:13px;font-weight:700}
+    .tab{padding:6px 12px;border-radius:8px;background:var(--blue);color:#fff;font-size:13px;font-weight:700}
+    .top-right{margin-left:auto;color:var(--muted);font-size:13px}
+    .main{display:grid;grid-template-columns:1.2fr .8fr;gap:16px;padding:16px 18px;min-height:0}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;opacity:0;transform:translateY(8px);transition:.45s ease}
+    .card.show{opacity:1;transform:none}
+    .card.wide{grid-column:1/-1}
+    .card h3{margin:0 0 8px;font-size:13px;color:var(--muted)}
+    .card h3 b{color:var(--ink);font-size:15px;margin-left:6px}
+    .card p,.card li{margin:0;font-size:14px;line-height:1.55}
+    .card ul{list-style:none;padding:0;margin:0}
+    .card li+li{margin-top:6px}
+    .label{color:#3d7d5c;font-weight:700}
+    .hit{background:#fff8d8;border-bottom:2px solid var(--amber);padding:0 2px;animation:flash 1.2s ease 2}
+    @keyframes flash{0%,100%{background:#fff8d8}50%{background:#ffe08a}}
+    .cursor{outline:3px solid var(--blue);outline-offset:2px;border-radius:4px;animation:sel .8s ease}
+    @keyframes sel{from{outline-color:transparent}to{outline-color:var(--blue)}}
+    .panel{background:#fff;border:1px solid var(--line);border-radius:12px;display:grid;grid-template-rows:48px 1fr 56px;min-height:0;overflow:hidden;transform:translateX(24px);opacity:0;transition:.5s ease}
+    .panel.open{transform:none;opacity:1}
+    .panel__head{display:flex;align-items:center;justify-content:space-between;padding:0 16px;border-bottom:1px solid var(--line);font-weight:800}
+    .live{color:#e44848;font-size:12px;animation:blink 1s infinite}
+    @keyframes blink{50%{opacity:.4}}
+    .panel__body{padding:16px;overflow:hidden}
+    .evidence{border:1px solid #f0d48a;background:#fffbeb;border-radius:10px;padding:12px 14px;margin-bottom:12px;opacity:0;transform:translateY(10px);transition:.45s ease}
+    .evidence.show{opacity:1;transform:none}
+    .evidence b{display:block;color:var(--amber);font-size:12px;letter-spacing:.08em;margin-bottom:6px}
+    .evidence p{margin:0;font-size:13px;line-height:1.55}
+    .evidence small{display:block;margin-top:8px;color:var(--muted);font-size:12px}
+    .ask{margin:10px 12px;border:1px solid var(--line);border-radius:10px;padding:12px 14px;color:var(--muted);font-size:13px;background:#f7f9fa}
+    .foot{display:flex;align-items:center;gap:14px;padding:0 22px;background:#fff;border-top:1px solid var(--line)}
+    .ghost{color:var(--muted);font-size:13px}
+    .save{margin-left:auto;background:var(--blue);color:#fff;border:0;border-radius:10px;padding:12px 22px;font-weight:800}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="top">
+      <div class="brand"><i></i>TERABOX 臨床AI</div>
+      <span class="pid">受診番号 7750</span>
+      <span class="pill">精緻化 完了</span>
+      <span class="tab">成人カルテテンプレート</span>
+      <div class="top-right">根拠トレース：ON</div>
+    </header>
+    <main class="main">
+      <section class="grid">
+        <article class="card" id="a1"><h3>CHIEF COMPLAINT <b>主訴</b></h3><p>発熱を伴う咳嗽・胸苦しさが1週間、喘鳴が1日。</p></article>
+        <article class="card" id="a2"><h3>HISTORY <b>病歴</b></h3><ul>
+          <li><span class="label">【現病歴】</span>降雨後に発症。黄色痰、胸痛、発熱38.5℃。</li>
+          <li><span class="label">【既往歴】</span>高血圧・糖尿病・喘息・薬剤アレルギーなし。</li>
+        </ul></article>
+        <article class="card" id="a3"><h3>EXAM &amp; STUDIES <b>身体所見・検査</b></h3><ul>
+          <li><span class="label">【身体所見】</span>未記載</li>
+          <li><span class="label">【検査】</span><span id="hit">白血球・好中球の上昇。胸部CTで軽度の炎症性浸潤。</span></li>
+        </ul></article>
+        <article class="card" id="a4"><h3>PLAN <b>診療計画</b></h3><ul>
+          <li><span class="label">【薬物】</span>アジスロマイシン 5日間</li>
+          <li><span class="label">【フォロー】</span>5日後に再評価。増悪時は救急受診。</li>
+        </ul></article>
+        <article class="card wide" id="a5"><h3>NOTES <b>備考</b></h3><p>本患者の再診枠を確保すること。</p></article>
+      </section>
+      <aside class="panel" id="panel">
+        <div class="panel__head"><span>循証Q&amp;A</span><span class="live">● LIVE</span></div>
+        <div class="panel__body" id="body"></div>
+        <div class="ask">質問を入力…（例：この所見の鑑別は？）</div>
+      </aside>
+    </main>
+    <footer class="foot">
+      <span class="ghost">＋ 追加</span><span class="ghost">更新</span><span class="ghost">クリア／リセット</span>
+      <button class="save" type="button">カルテを保存</button>
+    </footer>
+  </div>
+  <script>
+    ['a1','a2','a3','a4','a5'].forEach((id,i)=>setTimeout(()=>document.getElementById(id).classList.add('show'),150+i*120));
+    setTimeout(()=>{
+      document.getElementById('hit').classList.add('hit','cursor');
+      document.getElementById('panel').classList.add('open');
+    },1200);
+    const cards=[
+      {t:'根拠カード 01｜検査所見の解釈',p:'白血球・好中球の上昇は、細菌性肺炎を含む急性炎症を示唆します。画像所見と合わせて評価します。',s:'出典例：成人市中肺炎診療ガイドライン'},
+      {t:'根拠カード 02｜画像所見',p:'胸部CTの軽度炎症性浸潤は臨床症状と整合。必要な検査の欠落がないかを確認したうえで治療方針を提示しています。',s:'録音位置 04:12 ／ 原文へジャンプ可'},
+      {t:'設計原則',p:'出力は意思決定の補助です。最終判断は署名医師に帰属します。',s:''},
+    ];
+    const body=document.getElementById('body');
+    cards.forEach((c,i)=>{
+      setTimeout(()=>{
+        const el=document.createElement('div');
+        el.className='evidence';
+        el.innerHTML=`<b>${c.t}</b><p>${c.p}</p>${c.s?`<small>${c.s}</small>`:''}`;
+        body.appendChild(el);
+        requestAnimationFrame(()=>el.classList.add('show'));
+      },1800+i*900);
+    });
+  </script>
+</body>
+</html>

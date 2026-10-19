@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <title>臨床AI｜根拠トレース・モックアップ</title>
+  <style>
+    :root {
+      --bg: #eef1f4; --card: #fff; --ink: #1f2a30; --muted: #6b757a;
+      --line: #d8dee2; --blue: #2f7cf6; --green: #1f9d6a; --lime: #add735; --amber: #c9891a;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; width: 1440px; height: 900px; overflow: hidden; background: var(--bg);
+      color: var(--ink); font-family: "Hiragino Sans", "Noto Sans JP", "Segoe UI", sans-serif;
+    }
+    .app { display: grid; grid-template-rows: 56px 1fr 64px; height: 100%; }
+    .top {
+      display: flex; align-items: center; gap: 14px; padding: 0 22px;
+      background: #fff; border-bottom: 1px solid var(--line);
+    }
+    .brand { display: flex; align-items: center; gap: 8px; font-weight: 800; }
+    .brand i { width: 10px; height: 10px; background: var(--lime); display: inline-block; }
+    .pid { color: var(--green); font-weight: 700; }
+    .pill {
+      padding: 4px 12px; border-radius: 999px; background: #e7f7ef;
+      color: var(--green); font-size: 13px; font-weight: 700;
+    }
+    .tab {
+      padding: 6px 12px; border-radius: 8px; background: var(--blue); color: #fff;
+      font-size: 13px; font-weight: 700;
+    }
+    .top-right { margin-left: auto; display: flex; gap: 16px; color: var(--muted); font-size: 13px; align-items: center; }
+    .main { display: grid; grid-template-columns: 1.2fr .8fr; gap: 16px; padding: 16px 18px; min-height: 0; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: auto auto auto; gap: 12px; }
+    .card {
+      background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px;
+    }
+    .card.wide { grid-column: 1 / -1; }
+    .card h3 { margin: 0 0 8px; font-size: 13px; color: var(--muted); letter-spacing: .05em; }
+    .card h3 b { color: var(--ink); font-size: 15px; margin-left: 6px; letter-spacing: 0; }
+    .card p, .card li { margin: 0; font-size: 14px; line-height: 1.55; }
+    .card ul { list-style: none; padding: 0; margin: 0; }
+    .card li + li { margin-top: 6px; }
+    .label { color: #3d7d5c; font-weight: 700; }
+    .hit {
+      background: #fff8d8; border-bottom: 2px solid var(--amber); padding: 0 2px;
+    }
+    .panel {
+      background: #fff; border: 1px solid var(--line); border-radius: 12px;
+      display: grid; grid-template-rows: 48px 1fr 56px; min-height: 0; overflow: hidden;
+    }
+    .panel__head {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 16px; border-bottom: 1px solid var(--line); font-weight: 800;
+    }
+    .panel__body { padding: 16px; overflow: hidden; }
+    .evidence {
+      border: 1px solid #f0d48a; background: #fffbeb; border-radius: 10px; padding: 12px 14px; margin-bottom: 12px;
+    }
+    .evidence b { display: block; color: var(--amber); font-size: 12px; letter-spacing: .08em; margin-bottom: 6px; }
+    .evidence p { margin: 0; font-size: 13px; line-height: 1.55; }
+    .evidence small { display: block; margin-top: 8px; color: var(--muted); font-size: 12px; }
+    .ask {
+      margin: 10px 12px; border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px;
+      color: var(--muted); font-size: 13px; background: #f7f9fa;
+    }
+    .foot {
+      display: flex; align-items: center; gap: 14px; padding: 0 22px;
+      background: #fff; border-top: 1px solid var(--line);
+    }
+    .ghost { color: var(--muted); font-size: 13px; }
+    .save { margin-left: auto; background: var(--blue); color: #fff; border: 0; border-radius: 10px; padding: 12px 22px; font-weight: 800; }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="top">
+      <div class="brand"><i></i>TERABOX 臨床AI</div>
+      <span class="pid">受診番号 7750</span>
+      <span class="pill">精緻化 完了</span>
+      <span class="tab">成人カルテテンプレート</span>
+      <div class="top-right">
+        <span>根拠トレース：ON</span>
+        <span>精緻化：完了</span>
+      </div>
+    </header>
+    <main class="main">
+      <section class="grid">
+        <article class="card">
+          <h3>CHIEF COMPLAINT <b>主訴</b></h3>
+          <p>発熱を伴う咳嗽・胸苦しさが1週間、喘鳴が1日。</p>
+        </article>
+        <article class="card">
+          <h3>HISTORY <b>病歴</b></h3>
+          <ul>
+            <li><span class="label">【現病歴】</span>降雨後に発症。黄色痰、胸痛、発熱38.5℃、倦怠感。</li>
+            <li><span class="label">【既往歴】</span>高血圧・糖尿病・喘息・薬剤アレルギーなし。</li>
+            <li><span class="label">【家族歴】</span>未記載</li>
+          </ul>
+        </article>
+        <article class="card">
+          <h3>EXAM &amp; STUDIES <b>身体所見・検査</b></h3>
+          <ul>
+            <li><span class="label">【身体所見】</span>未記載</li>
+            <li><span class="label">【検査】</span><span class="hit">白血球・好中球の上昇</span>。胸部CTで軽度の炎症性浸潤。</li>
+          </ul>
+        </article>
+        <article class="card">
+          <h3>PLAN <b>診療計画</b></h3>
+          <ul>
+            <li><span class="label">【薬物】</span>アジスロマイシン 5日間</li>
+            <li><span class="label">【フォロー】</span>5日後に再評価。増悪時は救急受診。</li>
+          </ul>
+        </article>
+        <article class="card wide">
+          <h3>NOTES <b>備考</b></h3>
+          <p>本患者の再診枠を確保すること。</p>
+        </article>
+      </section>
+      <aside class="panel">
+        <div class="panel__head"><span>循証Q&amp;A</span><span style="color:#e44848;font-size:12px">● LIVE</span></div>
+        <div class="panel__body">
+          <div class="evidence">
+            <b>根拠カード 01｜検査所見の解釈</b>
+            <p>白血球・好中球の上昇は、細菌性肺炎を含む急性炎症を示唆します。コミュニティ獲得肺炎の診療指針に沿い、画像所見と合わせて評価します。</p>
+            <small>出典例：成人市中肺炎診療ガイドライン（参照用モック）</small>
+          </div>
+          <div class="evidence">
+            <b>根拠カード 02｜画像所見</b>
+            <p>胸部CTの軽度炎症性浸潤は、臨床症状と整合。必要な検査の欠落がないかを確認したうえで治療方針を提示しています。</p>
+            <small>録音位置 04:12 ／ 原文へジャンプ可</small>
+          </div>
+          <div class="evidence">
+            <b>設計原則</b>
+            <p>出力は意思決定の補助です。最終判断は署名医師に帰属します。</p>
+          </div>
+        </div>
+        <div class="ask">質問を入力…（例：この所見の鑑別は？）</div>
+      </aside>
+    </main>
+    <footer class="foot">
+      <span class="ghost">＋ 追加</span>
+      <span class="ghost">更新</span>
+      <span class="ghost">クリア／リセット</span>
+      <button class="save" type="button">カルテを保存</button>
+    </footer>
+  </div>
+</body>
+</html>

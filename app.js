@@ -1,7 +1,7 @@
 const ASSET = "./assets/images/";
 const REFERENCE_SLIDE_ASSET = "./assets/reference/slides/";
 const REFERENCE_SLIDE_COUNT = 43;
-let TOTAL = 43; // buildChapter8 の追加後に slides.length で更新
+let TOTAL = 43; // buildChapter8 / buildChapter9 の追加後に slides.length で更新
 const SLIDE_LAYER_MODES = new Set(["reference", "compare", "dom"]);
 
 const requestedLayerMode = new URLSearchParams(window.location.search).get("layer");
@@ -20,6 +20,7 @@ const sections = [
   { no: "06", label: "IT人材サービス事業部", start: 39, end: 42 },
   { no: "07", label: "主要取引先", start: 43, end: 43 },
   { no: "08", label: "事例｜AI導入実績", start: 44, end: 54 },
+  { no: "09", label: "事例｜臨床AI", start: 55, end: 65 },
 ];
 
 const footer = (n) => `
@@ -130,6 +131,7 @@ const slides = [
         "IT人材サービス事業部",
         "主要取引先",
         "事例｜AI導入実績",
+        "事例｜臨床AI",
       ]
         .map(
           (label, i) => `<div class="agenda__item"><b>${String(i + 1).padStart(2, "0")}</b><span>${label}</span></div>`,
@@ -855,9 +857,12 @@ function cycleSlideLayerMode() {
   setSlideLayerMode(layerModes[(currentIndex + 1) % layerModes.length]);
 }
 
-// 第08章(chapter8.js)のページを追加し、総ページ数を確定する
+// 第08・09章を追加し、総ページ数を確定する
 if (typeof buildChapter8 === "function") {
   slides.push(...buildChapter8({ frame, sectionSlide }));
+}
+if (typeof buildChapter9 === "function") {
+  slides.push(...buildChapter9({ frame, sectionSlide }));
 }
 TOTAL = slides.length;
 

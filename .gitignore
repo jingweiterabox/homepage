@@ -1,2 +1,17 @@
 .DS_Store
+source/*.mov
+source/*.MOV
+source/*.pdf
+source/frames/
+source/video-ja/.venv/
+source/video-ja/__pycache__/
+source/video-ja/dub/
+source/video-ja/live/
+source/video-ja/*.wav
+source/video-ja/*.mp4
+source/video-ja/*.raw.mp4
+source/video-ja/*.log
+source/video-ja/preview*.jpg
+# Old longer cut (CN UI) — site embeds clinical-ai-ja-dubbed.mp4 only
+assets/reference/clinical-ai/clinical-ai-ja.mp4
 

@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <title>臨床AI｜5ステップ・モックアップ</title>
+  <style>
+    :root {
+      --bg: #f4f6f4; --ink: #2f3639; --muted: #70787b; --line: #dfe4e5;
+      --lime: #add735; --charcoal: #2f3639; --soft: #fbfcfc;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; width: 1440px; height: 900px; overflow: hidden;
+      background:
+        radial-gradient(circle at 12% 18%, rgba(173,215,53,.18), transparent 42%),
+        radial-gradient(circle at 88% 80%, rgba(47,54,57,.08), transparent 36%),
+        var(--bg);
+      color: var(--ink);
+      font-family: "Hiragino Sans", "Noto Sans JP", "Segoe UI", sans-serif;
+    }
+    .frame {
+      width: 100%; height: 100%; padding: 48px 56px 40px;
+      display: grid; grid-template-rows: auto 1fr auto;
+    }
+    .kicker {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 13px; font-weight: 800; letter-spacing: .14em; color: var(--muted);
+    }
+    .kicker i { width: 10px; height: 10px; background: var(--lime); display: inline-block; }
+    h1 {
+      margin: 14px 0 0; font-size: 42px; line-height: 1.2; letter-spacing: -.04em; font-weight: 850;
+    }
+    .lead { margin: 12px 0 0; font-size: 18px; line-height: 1.6; color: var(--muted); max-width: 980px; }
+    .steps {
+      margin-top: 36px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; align-items: stretch;
+    }
+    .step {
+      background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 22px 18px;
+      position: relative; min-height: 320px;
+      box-shadow: 0 10px 28px rgba(16,23,24,.05);
+    }
+    .step:nth-child(odd) { background: var(--soft); }
+    .step:nth-child(3) {
+      background: var(--charcoal); color: #fff; border-color: var(--charcoal);
+    }
+    .step:nth-child(3) .num { color: var(--lime); }
+    .step:nth-child(3) p { color: #d7dedf; }
+    .step:nth-child(5) {
+      background: #f3f8e4; border-color: #d5e7a0;
+    }
+    .num {
+      font-size: 13px; font-weight: 800; letter-spacing: .12em; color: var(--lime);
+    }
+    .step h2 { margin: 18px 0 12px; font-size: 24px; line-height: 1.3; }
+    .step p { margin: 0; font-size: 15px; line-height: 1.6; color: var(--muted); }
+    .step .tag {
+      position: absolute; left: 18px; bottom: 18px; right: 18px;
+      font-size: 12px; font-weight: 700; letter-spacing: .08em; color: var(--ink);
+      border-top: 1px solid var(--line); padding-top: 12px;
+    }
+    .step:nth-child(3) .tag { color: var(--lime); border-top-color: rgba(255,255,255,.18); }
+    .foot {
+      display: flex; justify-content: space-between; align-items: center;
+      border-top: 1px solid var(--line); padding-top: 18px; color: var(--muted); font-size: 13px;
+    }
+    .foot b { color: var(--ink); }
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <header>
+      <div class="kicker"><i></i>TERABOX CLINICAL AI ／ MOCK UI</div>
+      <h1>録音からカルテまで、<br />現場の5ステップ</h1>
+      <p class="lead">医師は「書く」から「確認する」へ。対話の構造化・根拠トレース・適合確認までを一連の流れにします。</p>
+    </header>
+    <section class="steps">
+      <article class="step">
+        <div class="num">01</div>
+        <h2>ワンタッチ録音</h2>
+        <p>スマートバッジ等で診療対話を開始。話者を自動識別します。</p>
+        <div class="tag">CAPTURE</div>
+      </article>
+      <article class="step">
+        <div class="num">02</div>
+        <h2>リアルタイム転写</h2>
+        <p>医師と患者の発話を分離し、検索可能な会話ログを生成します。</p>
+        <div class="tag">TRANSCRIBE</div>
+      </article>
+      <article class="step">
+        <div class="num">03</div>
+        <h2>構造化カルテ</h2>
+        <p>主訴・病歴・所見・計画へ自動整理。目標は対話終了後3分以内。</p>
+        <div class="tag">STRUCTURE</div>
+      </article>
+      <article class="step">
+        <div class="num">04</div>
+        <h2>根拠トレース</h2>
+        <p>重要記載を録音・原文へ遡及。AIの根拠を可視化します。</p>
+        <div class="tag">TRACE</div>
+      </article>
+      <article class="step">
+        <div class="num">05</div>
+        <h2>確認して連携</h2>
+        <p>医師が最終確認し、HIS／EMRへ同期。質管理と適合も事前提示。</p>
+        <div class="tag">CONFIRM</div>
+      </article>
+    </section>
+    <footer class="foot">
+      <span>対外モックアップ｜製品UIの日本語表現例</span>
+      <b>TERABOX INC.</b>
+    </footer>
+  </div>
+</body>
+</html>

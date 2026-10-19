@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <title>臨床AI｜ノイズ除去ライブデモ</title>
+  <style>
+    :root {
+      --bg:#eef1f4; --card:#fff; --ink:#1f2a30; --muted:#6b757a; --line:#d8dee2;
+      --blue:#2f7cf6; --blue-soft:#e8f1ff; --green:#1f9d6a; --red:#e44848; --lime:#add735; --warn:#c9891a;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;width:1440px;height:900px;overflow:hidden;background:var(--bg);color:var(--ink);
+      font-family:"Hiragino Sans","Noto Sans JP",sans-serif}
+    .app{display:grid;grid-template-rows:56px 1fr 64px;height:100%;position:relative}
+    .top{display:flex;align-items:center;gap:14px;padding:0 22px;background:#fff;border-bottom:1px solid var(--line);z-index:2}
+    .brand{display:flex;align-items:center;gap:8px;font-weight:800}
+    .brand i{width:10px;height:10px;background:var(--lime);display:inline-block}
+    .pid{color:var(--green);font-weight:700}
+    .pill{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:999px;background:var(--blue-soft);color:var(--blue);font-size:13px;font-weight:700}
+    .pill::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--blue);animation:blink 1s infinite}
+    .pill.warn{background:#fff3d6;color:var(--warn)}
+    .pill.warn::before{background:var(--warn)}
+    .pill.ok{background:#e7f7ef;color:var(--green)}
+    .pill.ok::before{background:var(--green);animation:none}
+    @keyframes blink{50%{opacity:.35}}
+    .tab{padding:6px 12px;border-radius:8px;background:var(--blue);color:#fff;font-size:13px;font-weight:700}
+    .top-right{margin-left:auto;color:var(--muted);font-size:13px}
+    .banner{
+      position:absolute;left:50%;top:72px;transform:translateX(-50%) translateY(-12px);
+      z-index:5;opacity:0;pointer-events:none;
+      padding:10px 18px;border-radius:999px;font-weight:800;font-size:14px;letter-spacing:.04em;
+      background:#2f3639;color:#fff;box-shadow:0 10px 30px rgba(0,0,0,.18);transition:.35s ease;
+    }
+    .banner.show{opacity:1;transform:translateX(-50%) translateY(0)}
+    .banner.noise{background:#8a5a12}
+    .banner.filter{background:#1f6b45}
+    .main{display:grid;grid-template-columns:1.05fr .95fr;gap:16px;padding:16px 18px;min-height:0}
+    .cards{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1.1fr .55fr;gap:12px;min-height:0}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;overflow:hidden;opacity:.35;filter:grayscale(.4);transition:.5s ease}
+    .card.active{opacity:1;filter:none}
+    .card h3{margin:0 0 10px;font-size:13px;letter-spacing:.06em;color:var(--muted);font-weight:800}
+    .card h3 b{color:var(--ink);font-size:15px;letter-spacing:0;margin-left:6px}
+    .card p,.card li{margin:0;font-size:14px;line-height:1.55}
+    .card ul{margin:0;padding:0;list-style:none}
+    .card li+li{margin-top:6px}
+    .label{color:#3d7d5c;font-weight:700}
+    .typing::after{content:"▍";animation:blink 1s infinite;color:var(--blue)}
+    .card.wide{grid-column:1/-1}
+    .placeholder{color:#9aa3a5;font-size:13px}
+    .side{display:grid;grid-template-rows:150px 1fr;gap:12px;min-height:0}
+    .rec{background:#fff;border:1px solid var(--line);border-radius:12px;display:grid;place-items:center;gap:6px;padding:10px;position:relative}
+    .timer{width:78px;height:78px;border-radius:50%;border:5px solid var(--red);display:grid;place-items:center;font-size:16px;font-weight:800;color:var(--red);animation:pulse 1.6s infinite}
+    @keyframes pulse{70%{box-shadow:0 0 0 12px rgba(228,72,72,0)}100%{box-shadow:0 0 0 0 rgba(228,72,72,0)}}
+    .btn{border:0;border-radius:8px;padding:7px 14px;font-weight:700;background:var(--blue);color:#fff;font-size:13px}
+    .wave{display:flex;align-items:flex-end;gap:3px;height:30px;width:86%}
+    .wave span{flex:1;background:linear-gradient(#9ec0ff,var(--blue));border-radius:2px;animation:bar .9s ease-in-out infinite alternate}
+    .wave.noisy span{background:linear-gradient(#ffc28a,#e07a2f);animation-duration:.35s}
+    .wave.clean span{background:linear-gradient(#9ec0ff,var(--blue));animation-duration:1.1s}
+    .wave span:nth-child(odd){animation-duration:.55s}
+    @keyframes bar{from{height:15%}to{height:100%}}
+    .meter{position:absolute;right:12px;top:12px;font-size:11px;font-weight:800;letter-spacing:.06em;color:var(--warn)}
+    .meter.ok{color:var(--green)}
+    .chat{background:#fff;border:1px solid var(--line);border-radius:12px;display:grid;grid-template-rows:44px 1fr;min-height:0;overflow:hidden}
+    .search{margin:10px 12px 0;padding:8px 12px;border:1px solid var(--line);border-radius:8px;color:var(--muted);font-size:13px;background:#f7f9fa}
+    .msgs{padding:12px;overflow:hidden;display:flex;flex-direction:column;gap:8px}
+    .msg{max-width:92%;padding:9px 11px;border-radius:12px;font-size:13px;line-height:1.45;opacity:0;transform:translateY(10px);transition:.4s ease;position:relative}
+    .msg.show{opacity:1;transform:none}
+    .msg.dr{align-self:flex-start;background:#f2f4f6}
+    .msg.pt{align-self:flex-end;background:#dff6ea}
+    .msg.noise{background:#fff1df;border:1px dashed #e0b36a}
+    .msg.noise.filtered{opacity:.28;filter:grayscale(1);text-decoration:line-through;transform:scale(.98)}
+    .msg.keep{box-shadow:0 0 0 2px rgba(47,124,246,.35)}
+    .msg.keep::after{content:"抽出";position:absolute;right:8px;top:6px;font-size:10px;font-weight:800;color:var(--blue);letter-spacing:.08em}
+    .msg small{display:block;color:var(--muted);font-size:11px;margin-bottom:3px}
+    .tag{display:inline-block;margin-left:6px;padding:1px 6px;border-radius:999px;font-size:10px;font-weight:800;letter-spacing:.04em}
+    .tag.noise{background:#ffe2b0;color:#8a5a12}
+    .tag.clinical{background:#dfefff;color:#1d5fb5}
+    .foot{display:flex;align-items:center;gap:14px;padding:0 22px;background:#fff;border-top:1px solid var(--line)}
+    .ghost{color:var(--muted);font-size:13px}
+    .save{margin-left:auto;background:var(--blue);color:#fff;border:0;border-radius:10px;padding:12px 22px;font-weight:800;opacity:.55}
+    .save.ready{opacity:1;box-shadow:0 8px 20px rgba(47,124,246,.35)}
+    .legend{display:flex;gap:10px;align-items:center;font-size:12px;color:var(--muted)}
+    .legend b{color:var(--ink)}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="banner noise" id="banner">現場音声：雑談・環境音を含む生ログ</div>
+    <header class="top">
+      <div class="brand"><i></i>TERABOX 臨床AI</div>
+      <span class="pid">受診番号 7750</span>
+      <span class="pill warn" id="statusPill">生音声を受信中</span>
+      <span class="tab">成人カルテテンプレート</span>
+      <div class="top-right" id="topRight">ノイズフィルタ：待機</div>
+    </header>
+    <main class="main">
+      <section class="cards">
+        <article class="card" id="c1"><h3>CHIEF COMPLAINT <b>主訴</b></h3><p id="chief" class="placeholder">（臨床情報の抽出待ち）</p></article>
+        <article class="card" id="c2"><h3>HISTORY <b>病歴</b></h3><p class="placeholder" id="hist">雑談はここへ入れません</p></article>
+        <article class="card" id="c3"><h3>EXAM &amp; STUDIES <b>身体所見・検査</b></h3><p class="placeholder" id="exam">フィルタ後に反映</p></article>
+        <article class="card" id="c4"><h3>PLAN <b>診療計画</b></h3><p class="placeholder" id="plan">フィルタ後に反映</p></article>
+        <article class="card wide" id="c5"><h3>NOTES <b>備考</b></h3><p id="notes" class="placeholder">医師メモを入力…</p></article>
+      </section>
+      <aside class="side">
+        <div class="rec">
+          <div class="meter" id="meter">NOISE HIGH</div>
+          <div class="timer" id="timer">00:00:00</div>
+          <button class="btn" type="button">終了</button>
+          <div class="wave noisy" id="wave" aria-hidden="true"></div>
+        </div>
+        <div class="chat">
+          <div class="search">会話内容を検索…（生ログ）</div>
+          <div class="msgs" id="msgs"></div>
+        </div>
+      </aside>
+    </main>
+    <footer class="foot">
+      <div class="legend"><b>凡例</b> <span class="tag noise">雑談／ノイズ</span> <span class="tag clinical">臨床情報</span></div>
+      <button class="save" id="save" type="button">カルテを保存</button>
+    </footer>
+  </div>
+  <script>
+    const wave = document.getElementById('wave');
+    for (let i = 0; i < 28; i++) wave.appendChild(document.createElement('span'));
+
+    let sec = 0;
+    const timer = document.getElementById('timer');
+    setInterval(() => {
+      sec += 1;
+      const h = String(Math.floor(sec / 3600)).padStart(2, '0');
+      const m = String(Math.floor((sec % 3600) / 60)).padStart(2, '0');
+      const s = String(sec % 60).padStart(2, '0');
+      timer.textContent = `${h}:${m}:${s}`;
+    }, 1000);
+
+    const banner = document.getElementById('banner');
+    const statusPill = document.getElementById('statusPill');
+    const topRight = document.getElementById('topRight');
+    const meter = document.getElementById('meter');
+    const box = document.getElementById('msgs');
+
+    // Phase 1: noisy raw dialogue (chitchat + clinical mixed)
+    const msgs = [
+      { who: 'pt', text: '先生、今日駅前が混んでて遅くなりました。すみません。', at: 600, kind: 'noise' },
+      { who: 'dr', text: '大丈夫ですよ。天気も急に寒くなりましたね。', at: 1800, kind: 'noise' },
+      { who: 'pt', text: 'ええ、エアコンの音も気になって…あ、咳と熱が続いていて。', at: 3200, kind: 'mix' },
+      { who: 'dr', text: 'では本題を。鼻閉や息苦しさはありますか。アレルギーは？', at: 4800, kind: 'clinical' },
+      { who: 'pt', text: 'だるくて、咳と熱が7日くらい。アレルギーはありません。', at: 6400, kind: 'clinical' },
+      { who: 'pt', text: 'あと週末は孫の運動会で忙しくて…', at: 8000, kind: 'noise' },
+      { who: 'dr', text: '血算と胸部CTで方針を絞りましょう。', at: 9400, kind: 'clinical' },
+    ];
+
+    const nodes = [];
+    msgs.forEach((m) => {
+      setTimeout(() => {
+        const el = document.createElement('div');
+        const noise = m.kind === 'noise' || m.kind === 'mix';
+        el.className = `msg ${m.who}${noise ? ' noise' : ''}`;
+        el.dataset.kind = m.kind;
+        const tag = m.kind === 'clinical'
+          ? '<span class="tag clinical">臨床</span>'
+          : m.kind === 'mix'
+            ? '<span class="tag noise">混在</span>'
+            : '<span class="tag noise">雑談</span>';
+        el.innerHTML = `<small>${m.who === 'dr' ? '医師' : '患者'}${tag}</small>${m.text}`;
+        box.appendChild(el);
+        nodes.push(el);
+        requestAnimationFrame(() => el.classList.add('show'));
+      }, m.at);
+    });
+
+    function showBanner(text, cls) {
+      banner.className = `banner show ${cls}`;
+      banner.textContent = text;
+    }
+
+    function typeText(el, text, speed = 22) {
+      return new Promise((resolve) => {
+        let i = 0;
+        el.classList.remove('placeholder');
+        el.classList.add('typing');
+        el.textContent = '';
+        const t = setInterval(() => {
+          el.textContent = text.slice(0, ++i);
+          if (i >= text.length) {
+            clearInterval(t);
+            el.classList.remove('typing');
+            resolve();
+          }
+        }, speed);
+      });
+    }
+
+    // Phase 2: AI filter kicks in
+    setTimeout(() => {
+      showBanner('AIフィルタ起動：雑談・環境音を抑制', 'filter');
+      statusPill.className = 'pill';
+      statusPill.textContent = 'フィルタ処理中';
+      topRight.textContent = 'ノイズフィルタ：稼働';
+      meter.textContent = 'FILTERING';
+      wave.classList.remove('noisy');
+      wave.classList.add('clean');
+    }, 11000);
+
+    setTimeout(() => {
+      nodes.forEach((el) => {
+        const kind = el.dataset.kind;
+        if (kind === 'noise') {
+          el.classList.add('filtered');
+        } else if (kind === 'clinical' || kind === 'mix') {
+          el.classList.add('keep');
+          el.classList.remove('noise');
+        }
+      });
+      showBanner('臨床情報のみを抽出 → カルテへ反映', 'filter');
+      statusPill.className = 'pill ok';
+      statusPill.textContent = '臨床情報を抽出済み';
+      meter.className = 'meter ok';
+      meter.textContent = 'NOISE LOW';
+      topRight.textContent = 'ノイズフィルタ：完了';
+    }, 12500);
+
+    // Phase 3: chart fills with clinical only
+    setTimeout(async () => {
+      ['c1','c2','c3','c4','c5'].forEach((id) => document.getElementById(id).classList.add('active'));
+      await typeText(document.getElementById('chief'), '発熱を伴う咳嗽が7日間、胸苦しさ・喘鳴が続く。');
+      document.getElementById('hist').innerHTML =
+        '<ul><li><span class="label">【現病歴】</span>降雨後に発症。乾性咳嗽、発熱。</li>' +
+        '<li><span class="label">【既往歴】</span>薬剤アレルギーなし。</li></ul>';
+      document.getElementById('exam').innerHTML =
+        '<ul><li><span class="label">【方針】</span>血算・胸部CTで重症度を確認</li></ul>';
+      document.getElementById('plan').innerHTML =
+        '<ul><li><span class="label">【次ステップ】</span>検査後に治療方針を決定</li></ul>';
+      document.getElementById('notes').textContent = '雑談（駅・天気・運動会）はカルテへ未転記';
+      document.getElementById('notes').classList.remove('placeholder');
+      document.getElementById('save').classList.add('ready');
+      showBanner('結果：雑談は除外／症状・方針のみがカルテに残る', 'filter');
+    }, 14500);
+
+    // initial banner
+    setTimeout(() => showBanner('現場音声：雑談・環境音を含む生ログ', 'noise'), 300);
+  </script>
+</body>
+</html>
