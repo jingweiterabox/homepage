@@ -1807,8 +1807,12 @@ a:focus-visible {
 
 .logo-wall__item img {
   max-width: 100%;
-  max-height: 40px;
+  max-height: 44px;
   object-fit: contain;
+}
+
+.logo-wall__item img[alt="NS Solutions"] {
+  max-height: 52px;
 }
 
 .logo-wall__word {
