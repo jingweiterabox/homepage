@@ -1788,32 +1788,44 @@ a:focus-visible {
 }
 
 .logo-wall {
-  margin-top: 30px;
+  margin-top: 22px;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   align-items: center;
-  gap: 12px 30px;
+  gap: 6px 24px;
 }
 
 .logo-wall__item {
-  height: 82px;
+  min-height: 68px;
+  height: auto;
   display: grid;
   place-items: center;
+  align-content: center;
+  gap: 4px;
+  padding: 6px 8px;
 }
 
 .logo-wall__item img {
   max-width: 100%;
-  max-height: 56px;
+  max-height: 40px;
   object-fit: contain;
 }
 
 .logo-wall__word {
-  font: 700 22px/1 var(--font-en);
+  font: 700 18px/1 var(--font-en);
   letter-spacing: -0.03em;
 }
 
 .logo-wall__word--red {
   color: #d71920;
+}
+
+.logo-wall__caption {
+  display: block;
+  font: 500 11px/1.2 var(--font-jp, "Hiragino Sans", "Noto Sans JP", sans-serif);
+  color: var(--muted, #6b736f);
+  letter-spacing: 0.02em;
+  text-align: center;
 }
 
 @media (max-width: 980px) {

@@ -169,7 +169,7 @@ const slides = [
     "Corporate data sheet",
     `<div class="company-metrics">
       <div><b>2016</b><span>FOUNDED</span></div>
-      <div><b>20M</b><span>CAPITAL / JPY</span></div>
+      <div><b>30M</b><span>CAPITAL / JPY</span></div>
       <div><b>TOKYO</b><span>HEAD OFFICE</span></div>
     </div>
     <div class="company-sheet">
@@ -180,7 +180,7 @@ const slides = [
           <dt>所在地</dt><dd>〒104-0045<br />東京都中央区築地6-17-4 リードシー築地ビル4階</dd>
           <dt>TEL</dt><dd>03-5542-7798</dd>
           <dt>設立</dt><dd>2016年4月</dd>
-          <dt>資本金</dt><dd>2,000万円</dd>
+          <dt>資本金</dt><dd>3,000万円</dd>
           <dt>代表者</dt><dd>荊 威</dd>
           <dt>諸資格</dt><dd>プライバシーマーク 10825028<br />有料職業紹介許可証 13-ユ-309628<br />労働者派遣事業許可証 派13-312878<br />Google Cloud Partner</dd>
         </dl>
@@ -786,12 +786,41 @@ const slides = [
     "主要取引先（一部）／敬称略・順不同",
     `<div class="logo-wall">
       ${[
-        [null, "トヨタカネツ株式会社"], ["s43-02.jpg", "Rakuten"], ["s43-16.jpg", "JMDC"], ["s43-08.png", "FUJIFILM"],
-        [null, "NS Solutions"], [null, "FUJITSU"], ["s43-10.jpg", "AMADA"], ["s43-06.png", "Capgemini"],
-        ["s43-03.png", "Alibaba Cloud"], ["s43-07.png", "HAS"], ["s43-01.png", "SB Frameworks"], ["s43-11.jpg", "KONICA MINOLTA"],
-        [null, "Benesse"], ["s43-13.png", "THE PARK FRONT HOTEL"], ["s43-14.png", "PFU"], ["s43-05.png", "SHIFT"],
-        ["s43-04.jpg", "COSTCO WHOLESALE"], ["s43-12.png", "RH"], ["s43-09.png", "MIRAIT ONE"],
-      ].map(([src,label])=>`<div class="logo-wall__item">${src ? `<img src="${ASSET}${src}" alt="${label}" />` : `<span class="logo-wall__word ${label === "FUJITSU" ? "logo-wall__word--red" : ""}">${label}</span>`}</div>`).join("")}
+        [null, "トヨタカネツ株式会社"],
+        ["s43-02.jpg", "Rakuten"],
+        ["s43-16.jpg", "JMDC"],
+        ["s43-08.png", "FUJIFILM"],
+        ["s43-21.png", "NS Solutions", "日鉄ソリューションズ（日本直取引）"],
+        [null, "FUJITSU"],
+        ["s43-10.jpg", "AMADA"],
+        ["s43-06.png", "Capgemini"],
+        ["s43-03.png", "Alibaba Cloud"],
+        ["s43-07.png", "HAS"],
+        ["s43-01.png", "SB Frameworks"],
+        ["s43-11.jpg", "KONICA MINOLTA"],
+        [null, "Benesse"],
+        ["s43-13.png", "THE PARK FRONT HOTEL"],
+        ["s43-14.png", "PFU"],
+        ["s43-05.png", "SHIFT"],
+        ["s43-04.jpg", "COSTCO WHOLESALE"],
+        ["s43-12.png", "RH"],
+        ["s43-09.png", "MIRAIT ONE"],
+        ["s43-17.png", "Trouw Nutrition", "泰高飼料"],
+        ["s43-18.png", "Chiesi", "凯西制药"],
+        ["s43-19.png", "Jotun", "佐敦化学"],
+        ["s43-20.png", "igus", "易格斯"],
+        ["s43-22.png", "CMI"],
+      ]
+        .map(([src, label, caption]) => {
+          const wordClass =
+            label === "FUJITSU" ? "logo-wall__word logo-wall__word--red" : "logo-wall__word";
+          const media = src
+            ? `<img src="${ASSET}${src}" alt="${label}" />`
+            : `<span class="${wordClass}">${label}</span>`;
+          const note = caption ? `<small class="logo-wall__caption">${caption}</small>` : "";
+          return `<div class="logo-wall__item">${media}${note}</div>`;
+        })
+        .join("")}
     </div>
     <p style="margin:18px 0 0;text-align:center;font-size:18px">多様な業界のパートナーと、確かな実装を。</p>`,
   ),

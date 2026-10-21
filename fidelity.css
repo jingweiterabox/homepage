@@ -1854,25 +1854,38 @@
 .logo-wall {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 0 34px;
-  margin-top: 32px;
+  gap: 0 28px;
+  margin-top: 20px;
 }
 
 .logo-wall__item {
-  height: 82px;
-  padding: 16px 22px;
+  min-height: 64px;
+  height: auto;
+  padding: 10px 14px 8px;
   background: transparent;
   border-bottom: 1px solid rgba(208,214,210,.7);
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 3px;
 }
 
 .logo-wall__item img {
   max-width: 100%;
-  max-height: 43px;
+  max-height: 34px;
   filter: none;
 }
 
 .logo-wall__word {
-  font-size: 15px;
+  font-size: 14px;
+}
+
+.logo-wall__caption {
+  display: block;
+  font-size: 10px;
+  line-height: 1.2;
+  color: #6b736f;
+  text-align: center;
 }
 
 /* Source-alignment pass — src/ is the canonical 43-page reference. */
