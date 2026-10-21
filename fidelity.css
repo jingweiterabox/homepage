@@ -1877,19 +1877,13 @@
 }
 
 .logo-wall__item img[alt="NS Solutions"] {
-  max-height: 48px;
+  max-height: 54px;
+  transform: scale(1.2);
+  transform-origin: center;
 }
 
 .logo-wall__word {
   font-size: 14px;
-}
-
-.logo-wall__caption {
-  display: block;
-  font-size: 10px;
-  line-height: 1.2;
-  color: #6b736f;
-  text-align: center;
 }
 
 /* Source-alignment pass — src/ is the canonical 43-page reference. */

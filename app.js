@@ -790,7 +790,7 @@ const slides = [
         ["s43-02.jpg", "Rakuten"],
         ["s43-16.jpg", "JMDC"],
         ["s43-08.png", "FUJIFILM"],
-        ["s43-21.png", "NS Solutions", "日鉄ソリューションズ（日本直取引）"],
+        ["s43-21.png", "NS Solutions"],
         [null, "FUJITSU"],
         ["s43-10.jpg", "AMADA"],
         ["s43-06.png", "Capgemini"],
@@ -805,20 +805,19 @@ const slides = [
         ["s43-04.jpg", "COSTCO WHOLESALE"],
         ["s43-12.png", "RH"],
         ["s43-09.png", "MIRAIT ONE"],
-        ["s43-17.png", "Trouw Nutrition", "泰高飼料"],
-        ["s43-18.png", "Chiesi", "凯西制药"],
-        ["s43-19.png", "Jotun", "佐敦化学"],
-        ["s43-20.png", "igus", "易格斯"],
+        ["s43-17.png", "Trouw Nutrition"],
+        ["s43-18.png", "Chiesi"],
+        ["s43-19.png", "Jotun"],
+        ["s43-20.png", "igus"],
         ["s43-22.png", "CMI"],
       ]
-        .map(([src, label, caption]) => {
+        .map(([src, label]) => {
           const wordClass =
             label === "FUJITSU" ? "logo-wall__word logo-wall__word--red" : "logo-wall__word";
           const media = src
             ? `<img src="${ASSET}${src}" alt="${label}" />`
             : `<span class="${wordClass}">${label}</span>`;
-          const note = caption ? `<small class="logo-wall__caption">${caption}</small>` : "";
-          return `<div class="logo-wall__item">${media}${note}</div>`;
+          return `<div class="logo-wall__item">${media}</div>`;
         })
         .join("")}
     </div>
