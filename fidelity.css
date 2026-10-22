@@ -1855,7 +1855,7 @@
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 0 28px;
-  margin-top: 20px;
+  margin-top: 28px;
 }
 
 .logo-wall__item {
@@ -1874,6 +1874,17 @@
   max-width: 100%;
   max-height: 38px;
   filter: none;
+}
+
+.logo-wall__word--toyokanetsu {
+  display: inline-block;
+  max-width: 100%;
+  font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: 0.035em;
+  white-space: nowrap;
 }
 
 .logo-wall__item img[alt="NS Solutions"] {

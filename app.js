@@ -786,7 +786,7 @@ const slides = [
     "主要取引先（一部）／敬称略・順不同",
     `<div class="logo-wall">
       ${[
-        [null, "トヨタカネツ株式会社"],
+        [null, "トーヨーカネツ株式会社"],
         ["s43-02.jpg", "Rakuten"],
         ["s43-16.jpg", "JMDC"],
         ["s43-08.png", "FUJIFILM"],
@@ -813,11 +813,19 @@ const slides = [
       ]
         .map(([src, label]) => {
           const wordClass =
-            label === "FUJITSU" ? "logo-wall__word logo-wall__word--red" : "logo-wall__word";
+            label === "FUJITSU"
+              ? "logo-wall__word logo-wall__word--red"
+              : label === "トーヨーカネツ株式会社"
+                ? "logo-wall__word logo-wall__word--toyokanetsu"
+                : "logo-wall__word";
           const media = src
             ? `<img src="${ASSET}${src}" alt="${label}" />`
             : `<span class="${wordClass}">${label}</span>`;
-          return `<div class="logo-wall__item">${media}</div>`;
+          const itemClass =
+            label === "トーヨーカネツ株式会社"
+              ? "logo-wall__item logo-wall__item--toyokanetsu"
+              : "logo-wall__item";
+          return `<div class="${itemClass}">${media}</div>`;
         })
         .join("")}
     </div>
@@ -936,8 +944,8 @@ function renderSlide(animate = true) {
     slide.setAttribute("aria-label", `スライド ${currentSlide} / ${TOTAL}`);
     slide.classList.add("slide--reference-backed");
 
-    // 基準画像があるのは 1〜43 ページのみ(第08章以降は DOM のみで描画)
-    if (currentSlide <= REFERENCE_SLIDE_COUNT) {
+    // 基準画像があるのは 1〜43 ページのみ。43ページは修正版DOMを表示する。
+    if (currentSlide <= REFERENCE_SLIDE_COUNT && currentSlide !== 43) {
       const referenceImage = document.createElement("img");
       referenceImage.className = "slide__reference-bg";
       referenceImage.src = `${REFERENCE_SLIDE_ASSET}slide-${String(currentSlide).padStart(2, "0")}.png`;
