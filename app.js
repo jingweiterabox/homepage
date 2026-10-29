@@ -1,6 +1,5 @@
 const ASSET = "./assets/images/";
 const REFERENCE_SLIDE_ASSET = "./assets/reference/slides/";
-const REFERENCE_SLIDE_COUNT = 43;
 let TOTAL = 43; // buildChapter8 / buildChapter9 の追加後に slides.length で更新
 const SLIDE_LAYER_MODES = new Set(["reference", "compare", "dom"]);
 
@@ -16,11 +15,12 @@ const sections = [
   { no: "02", label: "会社概要", start: 4, end: 4 },
   { no: "03", label: "会社組織", start: 5, end: 5 },
   { no: "04", label: "エンジニアリング事業部", start: 6, end: 9 },
-  { no: "05", label: "ソリューション事業部", start: 10, end: 38 },
-  { no: "06", label: "IT人材サービス事業部", start: 39, end: 42 },
-  { no: "07", label: "主要取引先", start: 43, end: 43 },
-  { no: "08", label: "事例｜AI導入実績", start: 44, end: 54 },
-  { no: "09", label: "事例｜臨床AI", start: 55, end: 65 },
+  { no: "05", label: "ソリューション事業部", start: 10, end: 41 },
+  { no: "06", label: "IT人材サービス事業部", start: 42, end: 45 },
+  { no: "07", label: "主要取引先", start: 46, end: 46 },
+  { no: "08", label: "事例｜AI導入実績", start: 47, end: 57 },
+  { no: "09", label: "事例｜臨床AI", start: 58, end: 68 },
+  { no: "10", label: "事例｜TPS改善", start: 69, end: 73 },
 ];
 
 const footer = (n) => `
@@ -49,8 +49,8 @@ const editorialList = (items) => `
     ${items
       .map(
         (item, index) => `
-          <li>
-            <span class="editorial-list__num">${String(index + 1).padStart(2, "0")}</span>
+          <li${item[3] ? ` class="editorial-list__linked" data-goto="${item[3]}" role="link" tabindex="0" aria-label="${item[0]}へ移動"` : ""}>
+            <span class="editorial-list__num">${item[2] || String(index + 1).padStart(2, "0")}</span>
             <div><strong>${item[0]}</strong>${item[1] ? `<span>${item[1]}</span>` : ""}</div>
           </li>`,
       )
@@ -123,18 +123,19 @@ const slides = [
     "",
     `<div class="contents-layout"><div class="agenda__list">
       ${[
-        "経営ビジョン",
-        "会社概要",
-        "会社組織",
-        "エンジニアリング事業部",
-        "ソリューション事業部",
-        "IT人材サービス事業部",
-        "主要取引先",
-        "事例｜AI導入実績",
-        "事例｜臨床AI",
+        ["01", "経営ビジョン", 1],
+        ["02", "会社概要", 4],
+        ["03", "会社組織", 5],
+        ["04", "エンジニアリング事業部", 6],
+        ["05", "ソリューション事業部", 10],
+        ["06", "IT人材サービス事業部", 42],
+        ["07", "主要取引先", 46],
+        ["08", "事例｜AI導入実績", 47],
+        ["09", "事例｜臨床AI", 58],
+        ["10", "事例｜TPS改善", 69],
       ]
         .map(
-          (label, i) => `<div class="agenda__item"><b>${String(i + 1).padStart(2, "0")}</b><span>${label}</span></div>`,
+          ([number, label, target]) => `<button class="agenda__item" type="button" data-goto="${target}"><b>${number}</b><span>${label}</span></button>`,
         )
         .join("")}
     </div><figure class="contents__visual"><img src="./assets/reference/contents-architecture.png" alt="Terabox architectural visual" /></figure></div>`,
@@ -224,9 +225,9 @@ const slides = [
   ),
 
   () => sectionSlide(6, "04", "ENGINEERING", "エンジニアリング事業部", "設計・開発・運用を、確かな技術で支える。", [
-    ["部門概要", "多国籍エンジニアによる一貫支援"],
-    ["インフラ部", "クラウド基盤・ネットワークの設計、構築、運用"],
-    ["システム開発部", "AI・LLM・データ分析・業務システム開発"],
+    ["部門概要", "多国籍エンジニアによる一貫支援", null, 7],
+    ["インフラ部", "クラウド基盤・ネットワークの設計、構築、運用", null, 8],
+    ["システム開発部", "AI・LLM・データ分析・業務システム開発", null, 9],
   ]),
 
   () => frame(
@@ -280,10 +281,11 @@ const slides = [
   ),
 
   () => sectionSlide(10, "05", "SOLUTION", "ソリューション事業部", "業務の現場を理解し、実装できる仕組みに変える。", [
-    ["部門概要", "企画・導入・運用までを一貫支援"],
-    ["ロボット推進部", "サービスロボット / 物流ロボット"],
-    ["AI / DX推進部", "AIアプリ / 市場調査 / 人材マッチング / AIoT"],
-    ["製品推進部", "Engineering Base / Dynamics 365"],
+    ["部門概要", "企画・導入・運用までを一貫支援", "5.0", 11],
+    ["ロボット推進部", "サービスロボット / 物流ロボット", "5.1", 12],
+    ["AI / DX推進部", "AIアプリ / 市場調査 / 人材マッチング / AIoT", "5.2", 22],
+    ["製品推進部", "Engineering Base / Dynamics 365", "5.3", 34],
+    ["TPS・現場改善部", "トヨタ生産方式（TPS）の考え方と現場改善", "5.4", 39],
   ]),
 
   () => frame(
@@ -447,10 +449,10 @@ const slides = [
   ),
 
   () => sectionSlide(22, "05", "AI & DIGITAL TRANSFORMATION", "AI / DX 推進部", "AIを、現場で使える仕組みに。", [
-    ["AIアプリケーション開発", "LLM・コンピュータビジョン"],
-    ["市場調査インテリジェンス", "収集・統合・分析・報告"],
-    ["AI人材マッチング", "人材と案件の効率的な接続"],
-    ["AIoTスマートメーター", "遠隔検針・異常検知・可視化"],
+    ["AIアプリケーション開発", "LLM・コンピュータビジョン", null, 23],
+    ["市場調査インテリジェンス", "収集・統合・分析・報告", null, 27],
+    ["AI人材マッチング", "人材と案件の効率的な接続", null, 31],
+    ["AIoTスマートメーター", "遠隔検針・異常検知・可視化", null, 35],
   ]),
 
   () => frame(
@@ -727,9 +729,9 @@ const slides = [
   ),
 
   () => sectionSlide(39, "06", "IT TALENT SERVICES", "IT人材サービス<br />事業部", "人を、技術と事業へつなぐ。", [
-    ["人材紹介", "採用ニーズに応じたIT人材の提案"],
-    ["IT人材研修", "最新技術・業務知識の体系的な育成"],
-    ["人材プラットフォーム運営", "IT人材と企業の効率的なマッチング"],
+    ["人材紹介", "採用ニーズに応じたIT人材の提案", null, 43],
+    ["IT人材研修", "最新技術・業務知識の体系的な育成", null, 44],
+    ["人材プラットフォーム運営", "IT人材と企業の効率的なマッチング", null, 45],
   ]),
 
   () => frame(
@@ -893,13 +895,41 @@ function cycleSlideLayerMode() {
   setSlideLayerMode(layerModes[(currentIndex + 1) % layerModes.length]);
 }
 
-// 第08・09章を追加し、総ページ数を確定する
+// TPS本編は05の配下、TPS改善事例は独立した06として配置する。
+const slideReferenceNumbers = Array.from({ length: slides.length }, (_, index) => index + 1);
+let tpsCaseSlides = [];
+if (typeof buildSolutionTps === "function") {
+  const tpsSlides = buildSolutionTps({ frame, sectionSlide });
+  slides.splice(38, 0, ...tpsSlides);
+  slideReferenceNumbers.splice(38, 0, ...tpsSlides.map(() => null));
+  tpsCaseSlides = typeof buildChapter10 === "function"
+    ? buildChapter10({ frame, sectionSlide, startPage: 69 })
+    : [];
+  const insertedTpsSlides = tpsSlides.length;
+  // 改訂済みページと後続章の新しい章扉に古い基準画像を重ねない。
+  slideReferenceNumbers[9] = null;
+  slideReferenceNumbers[38 + insertedTpsSlides] = null;
+  slideReferenceNumbers[42 + insertedTpsSlides] = null;
+}
+
+const shiftedHelpers = (offset) => ({
+  frame: (number, ...args) => frame(number + offset, ...args),
+  sectionSlide: (number, ...args) => sectionSlide(number + offset, ...args),
+});
+
+// 既存の事例章を並べた後、独立したTPS改善事例を最終章として配置する。
 if (typeof buildChapter8 === "function") {
-  slides.push(...buildChapter8({ frame, sectionSlide }));
+  const chapterSlides = buildChapter8(shiftedHelpers(3));
+  slides.push(...chapterSlides);
+  slideReferenceNumbers.push(...chapterSlides.map(() => null));
 }
 if (typeof buildChapter9 === "function") {
-  slides.push(...buildChapter9({ frame, sectionSlide }));
+  const chapterSlides = buildChapter9(shiftedHelpers(3));
+  slides.push(...chapterSlides);
+  slideReferenceNumbers.push(...chapterSlides.map(() => null));
 }
+slides.push(...tpsCaseSlides);
+slideReferenceNumbers.push(...tpsCaseSlides.map(() => null));
 TOTAL = slides.length;
 
 function currentSection(page) {
@@ -926,6 +956,13 @@ function buildNavigation() {
   });
 }
 
+slideStage.addEventListener("click", (event) => {
+  const entry = event.target.closest("[data-goto]");
+  if (!entry) return;
+  event.preventDefault();
+  goToSlide(Number(entry.dataset.goto));
+});
+
 function updateNavigation() {
   const active = currentSection(currentSlide);
   sectionNav.querySelectorAll(".rail__item").forEach((button) => {
@@ -941,14 +978,20 @@ function renderSlide(animate = true) {
   slideStage.innerHTML = render();
   const slide = slideStage.firstElementChild;
   if (slide) {
+    slide.dataset.slide = String(currentSlide);
+    const visibleNumber = slide.querySelector(".slide__number");
+    if (visibleNumber) visibleNumber.textContent = String(currentSlide).padStart(2, "0");
+    const footerNumber = slide.querySelector(".slide__footer span:last-child");
+    if (footerNumber) footerNumber.textContent = `${currentSlide} / ${TOTAL}`;
     slide.setAttribute("aria-label", `スライド ${currentSlide} / ${TOTAL}`);
     slide.classList.add("slide--reference-backed");
 
-    // 基準画像があるのは 1〜43 ページのみ。43ページは修正版DOMを表示する。
-    if (currentSlide <= REFERENCE_SLIDE_COUNT && currentSlide !== 43) {
+    // 新章の挿入後も、基準画像を元のページに対応させて表示する。
+    const referenceSlide = slideReferenceNumbers[currentSlide - 1];
+    if (referenceSlide && referenceSlide !== 43) {
       const referenceImage = document.createElement("img");
       referenceImage.className = "slide__reference-bg";
-      referenceImage.src = `${REFERENCE_SLIDE_ASSET}slide-${String(currentSlide).padStart(2, "0")}.png`;
+      referenceImage.src = `${REFERENCE_SLIDE_ASSET}slide-${String(referenceSlide).padStart(2, "0")}.png`;
       referenceImage.alt = "";
       referenceImage.setAttribute("aria-hidden", "true");
       referenceImage.draggable = false;
@@ -1020,6 +1063,12 @@ layerToggle.addEventListener("click", cycleSlideLayerMode);
 
 window.addEventListener("keydown", (event) => {
   if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement || event.target instanceof HTMLSelectElement) return;
+  const directoryEntry = event.target.closest?.("[data-goto]");
+  if (directoryEntry && (event.key === "Enter" || event.key === " ")) {
+    event.preventDefault();
+    goToSlide(Number(directoryEntry.dataset.goto));
+    return;
+  }
   const keys = {
     ArrowLeft: -1,
     PageUp: -1,
